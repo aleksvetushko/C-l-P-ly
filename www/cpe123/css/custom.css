@@ -1,0 +1,45 @@
+body{margin:40px;}
+
+@-webkit-keyframes fadeIn { from { opacity:0; opacity: 1\9; margin-top: 100px;/* IE9 only */ } to { opacity:1; margin-top:0px;} }
+@-moz-keyframes fadeIn { from { opacity:0; opacity: 1\9; margin-top: 100px;/* IE9 only */ } to { opacity:1; margin-top:0px;} }
+@keyframes fadeIn { from { opacity:0; opacity: 1\9; margin-top: 100px;/* IE9 only */ } to { opacity:1; margin-top:50px;} }
+.fade-in {
+    opacity:0;  /* make things invisible upon start */
+	
+    -webkit-animation:fadeIn ease 1;  /* call our keyframe named fadeIn, use animattion ease-in and repeat it only 1 time */
+	-webkit-animation-delay: 2s;
+    -moz-animation:fadeIn ease 1;
+    animation:fadeIn ease 1;
+
+    -webkit-animation-fill-mode:forwards;  /* this makes sure that after animation is done we remain at the last keyframe value (opacity: 1)*/
+    -moz-animation-fill-mode:forwards;
+    animation-fill-mode:forwards;
+
+    -webkit-animation-duration:1s;
+    -moz-animation-duration:1s;
+    animation-duration:1s;
+}
+
+.fade-in, .1 {
+-webkit-animation-delay: 0.4s;
+-moz-animation-delay: 0.4s;
+animation-delay: 0.4s;
+}
+
+.fade-in, .2 {
+-webkit-animation-delay: 5.4s;
+-moz-animation-delay:5.4s;
+animation-delay: 5.4s;
+}
+
+.fade-in.3 {
+-webkit-animation-delay: 4s;
+-moz-animation-delay: 4s;
+animation-delay: 4s;
+}
+.center{
+	text-align: center;
+}
+.draw-button{
+	margin-right: 30px;
+}
