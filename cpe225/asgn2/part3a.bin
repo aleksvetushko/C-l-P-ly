@@ -1,0 +1,24 @@
+; Aleks Vetushko
+; Ashish Sethi
+; 3a
+
+; R0: data at x3100
+; R1: loop counter
+; R2: number of ones in data
+
+0011 0000 0000 0000   ; start program at x3000
+0101 000 000 1 00000  ; clear R0 (data at x3100)
+0101 001 001 1 00000  ; clear R1 (counter)
+0101 010 010 1 00000  ; clear R2 (number of ones in data)
+0001 001 001 1 01111  ; put #15 into R1
+0001 001 001 1 00001  ; put #1 into R1
+0010 000 011111010    ; get data at x3100 (xFB away from PC which is x3004) and store in R0
+
+0001 000 000 1 00000  ; make sure R0 is positive
+0000 011 000000001    ; branch (if not negative, skip  to next part)
+0001 010 010 1 00001  ; otherwise, add #1 to R2
+
+0001 000 000 000 000  ; left shift data (by ADDing it with itself)
+0001 001 001 1 11111  ; subtract 1 from R1
+0000 001 111111010    ; branch (if not zero or not negative) back 0011 010 011110100    ; otherwise store answer of R2 in x3101
+1111 0000 00100101    ; halt
