@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include "read.h"
+
+/* reads a line from user input and returns it, with a (-,) or (x,y,) at the start 
+ * This denotes line number of child nodes or - if no children [answer]
+ * if the line is \n then loops until user enters valid line */
+char * readInput(int yes, int no) {
+   char c;
+   int i = 0;
+   char *string = calloc(10, sizeof(char));
+   
+   /*while getchar is enter keep prompting for a char*/
+   while((c = fgetc(stdin)) == '\n') {
+      if(yes == -1) /*if input is an answer*/
+         printf("An empty response is not acceptable.  Please answer again.\nWhat is it (with article)? ");
+      else /*input is question*/
+         printf ("An empty response is not acceptable.  Please answer again.\n? ");
+   }
+
+   /*start string with children */
+   sprintf(string, "%d,%dx", yes, no);
+   i += strlen(string);
+
+   /*we append this char bc we already got one of the chars from the users^*/
+   string[i] = c;
+   i++;
+
+   /*keep getting chars until it's EOF or enter*/
+   while((c = fgetc(stdin)) != EOF && c != '\n') {
+      string[i] = c;
+      i++;
+      if((i+1) % 10 == 0) {
+         string = realloc( string, 1 + i*sizeof(char) + 10*sizeof(char) );
+         memset(string + i, 0, 10*sizeof(char));
+      }
+   }
+   return string;
+}
+
+/* reads line from file and returns it
+ * if line is \n then returns NULL */
+char * readlineToPopulateTree(FILE * file) {
+   char c;
+   int i = 0;
+   char *string = calloc(10, sizeof(char));
+
+   while((c = fgetc(file)) != EOF && c != '\n') {
+      string[i] = c; 
+      i++;
+      if((i+1) % 10 == 0) {
+         string = realloc(string, 1+ i*sizeof(char) + sizeof(char)*10);
+         memset(string + i, 0, 10*sizeof(char));
+      }
+   }
+
+   /*if line was enter*/
+   if(i == 0 && c == '\n') {
+      return NULL;
+   }
+
+   /*if c == EOF then a string of 10 zeros is returned?*/
+   return string;
+}
+
+

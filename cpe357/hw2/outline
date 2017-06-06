@@ -1,0 +1,54 @@
+Homework 2 Decomposition\
+\
+1. Start the program (assuming no db)\
+	- if there is no qa.db, create one and tell user you are making a new one. \
+		- need to first allocate space for it (maybe 1000 bytes?)\
+		- the qa.db database is a file a bunch of lines, each line is a string\
+		- so strings are delimited by new lines\
+		- string tree is ordered in preorder traversal (root, left, right)\
+		- children that are null are empty strings\
+	- if creating new qa.db, ask user \'93what is it?\'94 and after they answer, end the program\
+		- answer is stored in database as root node\
+\
+2. Start the program (assuming db)\
+	- Ask root node question\
+		- if no question, ask \'93is it %\'94, whatever animal is in the database\
+			- if they say yes, print thanks message and end program\
+			- if no, ask what is it\
+			- what is a question distinguishing it from the animal you have\
+			- what is the answer to that question\
+			- tell them i\'92ll get it next time, end program\
+		- if there is a question, ask the question\
+	- if answer to question is yes, go to child nodes and ask that\
+	- repeat above steps if no question\
+\
+- after every run of the program, free all the memory you\'92ve used\
+- also fclose the file\
+\
+Other Errors\
+	- if at any time user just hits enter with no other input, repeat question\
+	- if file is corrupted, tell user to fix file and exit program\
+		- to tell, when getting child node, if child is empty but has children, file is corrupt\
+	- every time we try to use memory that we don\'92t have, allocate more\
+\
+example file formal:\
+\
+can it swim?\
+no\
+yes\
+is it a zebra?\
+\
+System Tests\
+	- test program by looking at the database to make sure \'93nodes\'94 are in the right place\
+	- test program by playing the game, writing giant answers/questions that are 10000 chars long\
+	- try no input, just new line\
+	- try corrupting the file and playing (adding a line, removing)\
+\
+Functions\
+	- string fetch(int index, int answer)\
+		- fetches string at 2*index + answer\
+		- test by fetching strings and comparing them to the right answer\
+		- test by entering no input\
+	- void create_db()\
+		- creates new database\
+		- test by creating a new database}

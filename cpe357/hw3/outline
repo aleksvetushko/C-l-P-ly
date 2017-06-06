@@ -1,0 +1,40 @@
+Aleks Vetushko
+
+Homework 3 Decomposition
+
+RULE
+   - determine types of dependencies
+      - target; apply the rule
+      - file
+      - none (error)
+   - check if dependency is updated
+      - if file, compare timestamp to target's
+      - if target, consider updated because you applied rule^
+   - execute rule
+      - if no dependencies
+      - file with a name matching target doesn't exist
+      - any dependencies were updated
+   - if command line argument supplied, rule with target = argument is applied
+      - if no argument, first line of Smakefile is applied
+
+- every time command is executed, echo it to the screen
+
+ERRORS
+   - if rule missing separator
+   - if dependency is nonexistent
+   - lines not starting with tab aren't rules
+   - blank lines are ignored
+   - if file cannot be opened then program terminates with an error
+   - if no matching rule for command line argument, return error
+   - if executed command fails, print error
+
+data structures/functions
+   - parse command line arguments
+   - error function with switch statements of error codes
+   - check timestamp function
+   - use tree data structure?
+
+to test
+   - errors: system test, execute program improperly to see if errors work
+   - timestaps: update timestamps and check if program responds correctly
+   - command echo: test command echo by echoing command

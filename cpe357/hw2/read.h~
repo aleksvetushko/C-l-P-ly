@@ -1,0 +1,4 @@
+
+char * readInput(int yes, int no);
+char * readlineToPopulateTree(FILE * file);
+

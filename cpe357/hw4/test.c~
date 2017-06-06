@@ -1,0 +1,15 @@
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+
+int main()
+{
+   char *str;
+   char *str1;
+   str = "hi";
+   strcpy(str, str1);
+   str1[0] = 'x';
+   puts(str);
+               
+   return(0);
+}

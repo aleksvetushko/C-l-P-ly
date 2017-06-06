@@ -1,0 +1,20 @@
+Aleks Vetushko
+
+HW 4 Decomposition
+
+Functions
+   - sfind recursive function: recursively performs specified function for all files processed
+   - process the files; go through the heirarchy (if it's a directory) and process files - fork to do this
+      - if substring flag is included, only process files that include substring
+      - don't follow . or .. or symbolic links
+   - print function: if print is included in the command, print pathname of processed file to stdout
+   - fork to new process if -exec action is specified and execute command
+      - also need to parse and import command
+   - use opendir and readdir
+   - cannot use library routines to do traversal; ie scandir or fts functions
+   - cannot use system library routine; must write own process creation and program execution code
+
+Errors/resource management
+   - be careful of running out of file descriptors
+   - prevent program from reaching process limit
+

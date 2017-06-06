@@ -1,0 +1,15 @@
+#include <limits.h>
+#include <unistd.h>
+#include <stdio.h>
+
+int main(){
+   int childmax, openmax, pagesize;
+   
+   childmax = sysconf(_SC_CHILD_MAX);
+   openmax = sysconf(_SC_OPEN_MAX);
+   pagesize = sysconf(_SC_PAGESIZE);
+
+   printf("childmax: %d, openmax: %d, pagesize %d\n", childmax, openmax, pagesize);
+
+   return 0;
+}

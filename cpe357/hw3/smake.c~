@@ -1,0 +1,14 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+FILE * file;
+
+int main(int argc, char * argv[]) {
+   if ( (file = fopen("Smakefile", "r") ) == NULL) {
+            fprintf(stderr, "make: *** No targets specified and no makefile found. Stop.");
+            return 1; 
+   }
+
+   
+   return 0;
+}

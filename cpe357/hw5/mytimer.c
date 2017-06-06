@@ -1,0 +1,190 @@
+#include "mytimer.h"
+
+int time, hours, minutes, seconds, running, count;
+char sign = ' ';
+char twirler = '|';
+
+
+/*sets up terminal, executes program, restores terminal*/
+int handleKeyboard () {
+   struct termios tio;
+
+   setTerminal(&tio); /*set up terminal settings and store old ones in tio;*/
+   timer(); /*set up the timer*/
+
+   while (listen() == 1) /*while user hasn't pressed q*/
+      ;
+   restoreTerminal(&tio); /*restore old terminal settings*/
+
+   return 0;
+}
+
+
+/*listens for char input*/
+int listen() {
+   int c, ret_value;
+   ret_value = TRUE;
+
+   switch (c = getchar()) {
+   case 'q': /*quit*/
+      printf("%c %c%01d:%02d:%02d\n", twirler, sign, abs(hours), abs(minutes), abs(seconds));
+      ret_value = FALSE;
+      break;
+   case 'c': /*clear*/
+      time = 0;
+      break;
+   case 'r': /*run/stop*/
+      running = !running;
+      break;
+   case 'h': /*add hour*/
+      time += 3600;
+      break;
+   case 'H': /*subtract hour*/
+      time -= 3600;
+      break;
+   case 'm': /*add minute*/
+      time += 60;
+      break;
+   case 'M':
+      time -= 60;
+      break;
+   case 's': /*add second*/
+      time += 1;
+      break;
+   case 'S':
+      time -= 1;
+      break;
+
+   default:
+      if (feof(stdin))  /*if stdin is closed*/
+         ret_value = FALSE;
+      break;
+   }
+   return ret_value;
+}
+
+
+/*prints out time every time signal is generated*/
+void timer_handler(int signum) {
+   if(running) {
+      if(twirler == '|')
+         twirler = '/';
+      else if(twirler == '/')
+         twirler = '-';
+      else if(twirler == '-')
+         twirler = '\\';
+      else if(twirler == '\\')
+         twirler = '|';
+      if(time > 0)
+         sign = ' ';
+      else if(time < 0)
+         sign = '-';
+
+      hours = time/(60*60);
+      minutes = (time - hours*60*60)/60;
+      seconds = (time - hours*60*60 - minutes*60);
+
+      if(time == 0 && count == 0)
+         printf("\aBeeeep! Time's up!\n");
+      printf("%c %c%01d:%02d:%02d\r", twirler, sign, abs(hours), abs(minutes), abs(seconds));
+
+      count ++;
+      if(!(count % TICKS_PER_SECOND)) {
+         count = 0;
+         time --;
+      }
+      fflush(stdout);
+   }
+}
+
+
+/*sets up and initializes the timer*/
+void timer() {
+   struct sigaction sa;
+   struct itimerval mytimer;
+
+   memset (&sa, 0, sizeof (sa));
+   sa.sa_handler = &timer_handler;
+   sigaction (SIGALRM, &sa, NULL);
+
+   mytimer.it_value.tv_sec = 0;
+   mytimer.it_value.tv_usec = 50000; /*timer expires after 1/20th of a second*/
+   mytimer.it_interval.tv_sec = 0;
+   mytimer.it_interval.tv_usec = 50000; /*and goes off every 1/20th second after*/
+   
+   /*set the timer*/
+   setitimer (ITIMER_REAL, &mytimer, NULL);
+}
+
+
+/*sets new terminal settings and saves old ones*/
+void setTerminal (struct termios *old_tio) {
+   struct termios tio;
+
+   tcgetattr (0, old_tio); /*get old terminal attributes*/
+   tio = *old_tio; /*copy settings*/
+
+   tio.c_lflag &= ~ (ECHO | ECHOE | ECHOK | ECHONL | ICANON | ISIG ); /*new settings*/
+   tio.c_cc[VMIN] = 1;
+   tio.c_cc[VTIME] = 0;
+   tio.c_cc[VINTR] = 0; /*Ctrl-C*/
+   tio.c_cc[VEOF] = 0; /*Ctrl-D*/
+   tio.c_cc[VSUSP] = 0; /*Ctrl-Z*/
+
+   tcsetattr (0, TCSAFLUSH, &tio);
+}
+
+
+/*resets terminal settings*/
+void restoreTerminal (struct termios *tio) {
+   tcsetattr (0, TCSAFLUSH, tio);
+}
+
+
+/*check for invalid command line input*/
+void invalidInput(int argc, char *argv[]) {
+   int x, inputtoi;
+
+   if (argc == 1) { /*for example ./mytimer*/
+      fprintf(stderr, "usage: //home/getaylor/mytimer <seconds>\n");
+      exit(-1);
+   }
+   else if (argc == 3) { /*for example ./mytimer 5 3*/
+      fprintf(stderr, "usage: //home/getaylor/mytimer <seconds>\n");
+      exit(-1);
+   }
+   else if (argc == 2) {
+      inputtoi = atoi(argv[1]);
+      if (inputtoi == 0 && argv[1][0] == '-' && argv[1][1] != '0') { /* if - */
+         fprintf(stderr, "%s: malformed time.\nusage: //home/getaylor/mytimer <seconds>\n", argv[1]);
+         exit(-1);
+      }
+      if ( !(argv[1][0] == '-' || (argv[1][0] < 58 && argv[1][0] > 47)) ) { /*if not (first char is - or number)*/
+         fprintf(stderr, "%s: malformed time.\nusage: //home/getaylor/mytimer <seconds>\n", argv[1]);
+         exit(-1);
+      }
+      for(x = 1; x < strlen(argv[1]); x++) {
+         if(argv[1][x] > 58 || argv[1][x] < 47) {
+            fprintf(stderr, "%s: malformed time.\nusage: //home/getaylor/mytimer <seconds>\n", argv[1]);
+            exit(-1);
+         }
+      }
+      if (inputtoi < 0) {
+         fprintf(stderr, "Invalid time(%d).  Must be >= 0.\nusage: //home/getaylor/mytimer <seconds>\n", inputtoi);
+         exit(-1);
+      }
+   }
+}
+
+
+int main(int argc, char *argv[]) {
+   invalidInput(argc, argv); /*check command line input*/
+   
+   time = atoi(argv[1]);
+   count = 0;
+   running = TRUE;
+
+   handleKeyboard();
+
+   return 0;
+}

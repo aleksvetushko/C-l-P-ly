@@ -1,0 +1,17 @@
+CC = gcc
+CFLAGS = -Wall -ansi -pedantic -g
+MAIN = guess
+OBJS = guess.o read.o
+all : $(MAIN)
+
+$(MAIN) : $(OBJS) guess.h read.c
+	$(CC) $(CFLAGS) -o $(MAIN) $(OBJS)
+
+guess.o : guess.c guess.h
+	$(CC) $(CFLAGS) -c guess.c
+
+read.o : read.c read.h
+	$(CC) $(CFLAGS) -c read.c
+
+clean :
+	rm *.o $(MAIN) core
