@@ -1,0 +1,25 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/types.h>
+#include <unistd.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+int main(int argc, char *argv[]) {
+   pid_t pid;
+   int status, fd;
+   
+   fd = open(argv[2], O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
+   dup2(fd, 1);
+
+   pid = fork();
+
+   if(pid == 0) /*child*/
+      execl(argv[1], argv[1], argv[2], (char *)NULL);
+
+   else {
+      wait(&status);
+   }
+
+   return 0;
+}

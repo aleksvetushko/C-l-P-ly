@@ -1,0 +1,12 @@
+Complexity Scores
+Score | ln-ct | nc-lns| file-name(line): proc-name
+    6       5       5   guess.c(11): freeTree
+   18      11      11   guess.c(133): question
+   21      13      13   guess.c(116): answer
+   23      18      15   guess.c(220): main
+   31      19      14   guess.c(148): traverse
+   40      21      16   guess.c(57): readlineToPopulateTree
+   47      29      24   guess.c(83): populateTree
+   52      30      22   guess.c(22): readInput
+   53      45      38   guess.c(171): getNewElement
+total nc-lns      158

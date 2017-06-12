@@ -112,11 +112,42 @@ void populateTree() {
    free(string);
 }
 
+/*element is an answer*/
+void answer(char *start, int positionInTree) {
+   char ch;
+   printf("Is it %s? ", start);
+   while( (ch = getc(stdin)) == '\n') {
+      printf("An empty response is not acceptable.  Please answer again.\n");
+      printf("Is it %s? ", start);
+   }
+   if( (ch == 'y' || ch == 'Y')) { /*if yes*/
+      printf("\nMy, am I clever.  :)\nThanks for playing.\n\n");
+      freeTree();
+      exit(0);
+   }
+   else /*if no*/
+      getNewElement(*(tree+positionInTree), start, positionInTree);
+}
+   
+/*if element is a question*/
+int question(char *start, int yes, int no, int positionInTree) {
+   char ch;
+   printf("%s ", start);
+   while( (ch = getc(stdin)) == '\n') {
+      printf("An empty response is not acceptable.  Please answer again.\n"); 
+      printf("%s ", start);
+   }
+   if( (ch == 'y' || ch == 'Y')) /*if yes*/
+      positionInTree = yes;
+   else /*if no*/
+      positionInTree = no;
+   return positionInTree;
+}
+
 /*the big function, traverses the tree with the user*/
 void traverse(void) {
    int positionInTree = 1; /*tree[0] is null*/
    int yes, no;
-   char ch;
    char * start, * strfromyes, * strfromno;
 
    while(*(tree+positionInTree)) {
@@ -125,33 +156,11 @@ void traverse(void) {
       start = strfromno + 1;
 
       /*if the element is an answer*/
-      if(*(tree+positionInTree)[0] == '-') {
-         printf("Is it %s? ", start);
-         while( (ch = getc(stdin)) == '\n') {
-            printf("An empty response is not acceptable.  Please answer again.\n");
-            printf("Is it %s? ", start);
-         }
-         if( (ch == 'y' || ch == 'Y')) { /*if yes*/
-            printf("\nMy, am I clever.  :)\nThanks for playing.\n\n");
-            freeTree();
-            exit(0);
-         }
-         else /*if no*/
-            getNewElement(*(tree+positionInTree), start, positionInTree);
-      }
+      if(*(tree+positionInTree)[0] == '-')
+         answer(start, positionInTree);
 
-      /*if element is a question*/
-      else {
-         printf("%s ", start);
-         while( (ch = getc(stdin)) == '\n') {
-            printf("An empty response is not acceptable.  Please answer again.\n"); 
-            printf("%s ", start);
-         }
-         if( (ch == 'y' || ch == 'Y')) /*if yes*/
-            positionInTree = yes;
-         else /*if no*/
-            positionInTree = no;
-      }
+      else /*question*/
+         positionInTree = question(start, yes, no, positionInTree);
 
       while ((getchar()) != '\n'); /*flushes the input buffer*/
    }
